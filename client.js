@@ -18,12 +18,12 @@ $(document).ready(function() {
    window.addEventListener("devicemotion", function(event) {
       var accel = event.accelerationIncludingGravity;
       piece.center = computeCenter(piece.center, accel);
-      drawGrid(context);
+      drawBoard(context);
       drawPiece(context, piece);
    }, true);
 });
 
-function drawGrid(context) {
+function drawBoard(context) {
    context.clearRect(0, 0, kBoardWidth, kBoardHeight);
    for (var x = 0.5; x < kBoardWidth; x += 10) {
        context.moveTo(x, 0);
@@ -35,6 +35,14 @@ function drawGrid(context) {
    }
    context.strokeStyle = "#eee";
    context.stroke();
+}
+
+function drawPiece(context, piece) {
+   context.fillStyle = piece.color;
+   context.beginPath();
+   context.arc(piece.center.x, piece.center.y, kCircleRadius, 0, Math.PI * 2, false);
+   context.closePath();
+   context.fill();
 }
 
 function computeCenter (oldCenter, acceleration) {
@@ -60,11 +68,3 @@ function computeCenter (oldCenter, acceleration) {
    return newCenter;
 }
 
-function drawPiece(context, piece) {
-   context.fillStyle = piece.color;
-   // context.fillText(piece.center.x + ", " + piece.center.y, 10, 10);
-   context.beginPath();
-   context.arc(piece.center.x, piece.center.y, kCircleRadius, 0, Math.PI * 2, false);
-   context.closePath();
-   context.fill();
-}
