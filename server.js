@@ -35,6 +35,8 @@ function contentType(path) {
       return "text/javascript";
    } else if (path.match('.css$')) {
       return  "text/css";           
+   } else if (path.match('.manifest$')) {
+      return  "text/cache-manifest";
    }  else {
       return "text/html";
    }
