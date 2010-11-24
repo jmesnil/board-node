@@ -8,9 +8,7 @@
 
 On your server machine:
 
-    
   $ node server.js
-
 
 ## Run the client
 
