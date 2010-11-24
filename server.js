@@ -1,7 +1,3 @@
-/**
- * Important note: this application is not suitable for benchmarks!
- */
-
 var http = require('http')
 var url = require('url');
 var fs = require('fs');
