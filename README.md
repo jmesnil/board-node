@@ -8,8 +8,8 @@
 
 On your server machine:
 
-    $ cd board  
-    $ node server.js
+    
+  $ node server.js
 
 
 ## Run the client
