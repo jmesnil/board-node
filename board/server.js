@@ -5,13 +5,10 @@
 var http = require('http')
 var url = require('url');
 var fs = require('fs');
-var io = require('socket.io');
 var sys = require('sys');
   
 // the HTTP server
 var server;
-// the WebSocket server
-var wsserver;
 // the HTTP port
 var port = 8080;
 
@@ -44,24 +41,4 @@ function contentType(path) {
 }
 
 server.listen(port);
-wsserver = io.listen(server);
-
 console.log("HTTP server running at htpp://0.0.0.0:" + port );
-
-var buffer = [];
- 
-wsserver.on('connection', function(client){
-  client.send({ buffer: buffer });
-  client.broadcast({ announcement: client.sessionId + ' connected' });
-  
-  client.on('message', function(message){
-    var msg = { message: [client.sessionId, message] };
-    buffer.push(msg);
-    if (buffer.length > 15) buffer.shift();
-    client.broadcast(msg);
-  });
-
-  client.on('disconnect', function(){
-    client.broadcast({ announcement: client.sessionId + ' disconnected' });
-  });
-});
