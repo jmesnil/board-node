@@ -1,5 +1,8 @@
 (function(windows) {
 
+   // 2D context of the board <canvas>
+   var context = document.getElementById("board").getContext("2d");
+
    var kBoardWidth = 320;
    var kBoardHeight = 460;
    var kCircleRadius = 32;
@@ -16,7 +19,7 @@
       color: "#000"
    };
 
-   Board.drawBoard = function(context) {
+   Board.drawBoard = function() {
       context.clearRect(0, 0, kBoardWidth,  kBoardHeight);
       for (var x = 0.5; x < kBoardWidth; x += 10) {
          context.moveTo(x, 0);
@@ -30,7 +33,7 @@
       context.stroke();
    };
 
-   Board.drawPiece = function(context, piece) {
+   Board.drawPiece = function(piece) {
       context.fillStyle = piece.color;
       context.beginPath();
       context.arc(piece.center.x, piece.center.y, kCircleRadius, 0, Math.PI * 2, false);

@@ -1,6 +1,4 @@
 (function(windows) {
-   var board = document.getElementById("board");
-   var context = board.getContext("2d");
    var socket = new WebSocket("ws://"+location.host);
 
    socket.onerror = function() {
@@ -9,8 +7,8 @@
 
    socket.onmessage = function(message) {
        var otherPiece = JSON.parse(message.data);
-       Board.drawBoard(context);
-       Board.drawPiece(context, otherPiece);
+       Board.drawBoard();
+       Board.drawPiece(otherPiece);
    };
 
    // override Board broadcast function to send
