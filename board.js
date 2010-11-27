@@ -21,6 +21,8 @@
 
    Board.drawBoard = function() {
       context.clearRect(0, 0, kBoardWidth,  kBoardHeight);
+
+      context.beginPath();
       for (var x = 0.5; x < kBoardWidth; x += 10) {
          context.moveTo(x, 0);
          context.lineTo(x, kBoardHeight);
@@ -29,6 +31,8 @@
          context.moveTo(0, y);
          context.lineTo(kBoardWidth, y);
       }
+      context.closePath();
+
       context.strokeStyle = "#eee";
       context.stroke();
    };
@@ -45,9 +49,9 @@
       c = Board.piece.center;
       c.xShift = c.xShift * 0.8 + acceleration.x * 2.0;
       c.yShift = c.yShift * 0.8 + acceleration.y * 2.0;
-      c.x = c.x + c.xShift;
+      c.x = Math.floor(c.x + c.xShift);
       // use *minus* to compute the center's new y
-      c.y = c.y - c.yShift;
+      c.y = Math.floor(c.y - c.yShift);
       // do not go outside the boundaries of the canvas
       if (c.x < kCircleRadius) {
          c.x = kCircleRadius;
