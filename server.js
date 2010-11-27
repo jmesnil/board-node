@@ -53,4 +53,4 @@ wsServer.addListener("connection", function(connection){
 });
 
 wsServer.listen(port);
-console.log("Server running at htpp://0.0.0.0:" + port );
+console.log("Server running at http://0.0.0.0:" + port );
