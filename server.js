@@ -47,8 +47,12 @@ wsServer = ws.createServer({server: httpServer});
 
 wsServer.addListener("connection", function(connection){
    connection.addListener("message", function(message){
-      console.log(message);
-      connection.broadcast(message);
+      // TODO: directly inject the id without JSON decoding
+      var obj = JSON.parse(message);
+      obj.id = connection.id;
+      var out = JSON.stringify(obj);
+      console.log(out);
+      connection.broadcast(out);
   });
 });
 
