@@ -64,9 +64,5 @@
       Board.piece.center = c;
    };
 
-   Board.broadcast = function(piece) {
-      // do nothing
-   };
-
    window.Board = Board;
 })(window);

@@ -4,6 +4,10 @@ $(document).ready(function() {
       Board.updateCenter(accel);
       Board.drawBoard();
       Board.drawPiece(Board.piece);
-      Board.broadcast(Board.piece);
+      // Board.broadcast is only available
+      // when the client can acess the server
+      if (Board.broadcast) {
+         Board.broadcast(Board.piece);
+      }
    }, true);
 });

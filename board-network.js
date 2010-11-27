@@ -11,8 +11,6 @@
        Board.drawPiece(otherPiece);
    };
 
-   // override Board broadcast function to send
-   // the piece data to the server
    Board.broadcast = function(piece) {
       socket.send(JSON.stringify(piece));
    };
