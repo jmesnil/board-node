@@ -2,13 +2,30 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var sys = require('sys');
+var util = require('util');
+var ws = require('websocket-server');
   
 // the HTTP server
-var server;
-// the HTTP port
+var httpServer;
+// the WebSocket server
+var wsServer;
+// the server port
+// (used by both HTTP connections and WebSockets)
 var port = 8080;
 
-server = http.createServer(function(req, res){
+function contentType(path) {
+   if (path.match('.js$')) {
+      return "text/javascript";
+   } else if (path.match('.css$')) {
+      return  "text/css";
+   } else if (path.match('.manifest$')) {
+      return  "text/cache-manifest";
+   }  else {
+      return "text/html";
+   }
+}
+
+httpServer = http.createServer(function(req, res){
   var path = url.parse(req.url).pathname;
   if (path == '/') {
      path = '/index.html'
@@ -26,17 +43,14 @@ server = http.createServer(function(req, res){
   });
 });
 
-function contentType(path) {
-   if (path.match('.js$')) {
-      return "text/javascript";
-   } else if (path.match('.css$')) {
-      return  "text/css";           
-   } else if (path.match('.manifest$')) {
-      return  "text/cache-manifest";
-   }  else {
-      return "text/html";
-   }
-}
+wsServer = ws.createServer({server: httpServer});
 
-server.listen(port);
-console.log("HTTP server running at htpp://0.0.0.0:" + port );
+wsServer.addListener("connection", function(connection){
+   connection.addListener("message", function(message){
+      console.log(message);
+      connection.broadcast(message);
+  });
+});
+
+wsServer.listen(port);
+console.log("Server running at htpp://0.0.0.0:" + port );

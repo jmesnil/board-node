@@ -12,14 +12,29 @@ var piece = {
    color: "#000"
 };
 
+var socket;
+var context;
+
 $(document).ready(function() {
    var board = document.getElementById("board");
-   var context = board.getContext("2d");
+   context = board.getContext("2d");
+
+   socket = new WebSocket("ws://"+location.host);
+   socket.onerror = function() {
+        alert("onerror " + arguments);
+   };
+   socket.onmessage = function(message) {
+      var otherPiece = JSON.parse(message.data);
+      drawBoard(context);
+      drawPiece(context, otherPiece);
+   }
+
    window.addEventListener("devicemotion", function(event) {
       var accel = event.accelerationIncludingGravity;
       piece.center = computeCenter(piece.center, accel);
       drawBoard(context);
       drawPiece(context, piece);
+      socket.send(JSON.stringify(piece));
    }, true);
 });
 
