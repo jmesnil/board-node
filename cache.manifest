@@ -1,0 +1,14 @@
+CACHE MANIFEST
+# rev 17
+
+# Correct cache config
+# but it is a chore to use during development :(
+
+CACHE:
+/screen.css
+/jquery.min.js
+/board.js
+/client.js
+
+NETWORK:
+*
