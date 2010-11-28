@@ -1,13 +1,12 @@
 (function(windows) {
 
-   // 2D context of the board <canvas>
-   var context = document.getElementById("board").getContext("2d");
+   var canvas = document.getElementById("board");
 
    var kBoardWidth = 320;
    var kBoardHeight = 460;
    var kCircleRadius = 32;
    var timeout = 1000; // in ms
-
+   var refresh = 100; // in ms
    var Board = {};
 
    var pieces = {};
@@ -43,13 +42,24 @@
        pieces[id].timestamp = new Date().getTime();
    };
 
-   Board.draw = function() {
-      context.clearRect(0, 0, kBoardWidth,  kBoardHeight);
+   Board.draw = function () {
+      canvas.getContext('2d').clearRect(0, 0, kBoardWidth, kBoardHeight);
+      
+      //drawBuffer(canvas.getContext('2d'));
 
-      Board.drawBoard();
+      var buffer = document.createElement('canvas');
+      buffer.width = kBoardWidth;
+      buffer.height = kBoardHeight;
+      drawBuffer(buffer.getContext('2d'));
+      canvas.getContext('2d').drawImage(buffer, 0, 0);
+      delete buffer;
+   };
+   
+   var drawBuffer = function(context) {
+      drawBoard(context);
 
       if (Board.myPiece.updated) {
-         Board.drawPiece(Board.myPiece);
+         drawPiece(context, Board.myPiece);
       }
 
       var now = new Date().getTime();
@@ -59,13 +69,14 @@
             if (now - piece.timestamp > timeout) {
                delete pieces[id];
             } else {
-               Board.drawPiece(piece);
+               drawPiece(context, piece);
             }
          }
       }
    };
 
-   Board.drawBoard = function() {
+   var drawBoard = function(context) {
+      context.save();
       context.beginPath();
       for (var x = 0.5; x < kBoardWidth; x += 10) {
          context.moveTo(x, 0);
@@ -79,14 +90,17 @@
 
       context.strokeStyle = "#eee";
       context.stroke();
+      context.restore();
    };
 
-   Board.drawPiece = function(piece) {
+   var drawPiece = function(context, piece) {
+      context.save();
       context.fillStyle = piece.color;
       context.beginPath();
       context.arc(piece.center.x, piece.center.y, kCircleRadius, 0, Math.PI * 2, false);
       context.closePath();
       context.fill();
+      context.restore();
    };
 
    Board.updateCenter = function(acceleration) {
@@ -118,7 +132,7 @@
    // do not get any message from the server
    setInterval(function() {
       Board.draw();
-   }, timeout);
+   }, refresh);
 
    // first time, only the board will be drawn
    Board.draw();

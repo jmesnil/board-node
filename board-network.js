@@ -9,7 +9,6 @@
        var otherPiece = JSON.parse(message.data);
        var id = otherPiece.id;
        Board.put(id, otherPiece);
-       Board.draw();
    };
 
    Board.broadcast = function(piece) {
