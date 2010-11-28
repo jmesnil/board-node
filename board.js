@@ -6,22 +6,66 @@
    var kBoardWidth = 320;
    var kBoardHeight = 460;
    var kCircleRadius = 32;
+   var timeout = 1000; // in ms
 
    var Board = {};
 
-   Board.piece = {
+   var pieces = {};
+
+   Board.myPiece = {
       center : {
-         x: kBoardWidth / 2,
-         y: kBoardHeight / 2,
-         xShift : 0,
-         yShift : 0
-      },
-      color: "#000"
+         x: kBoardWidth / 2
+       , y: kBoardHeight / 2
+       , xShift : 0
+       , yShift : 0
+      }
+    , color: "#000"
+    // myPiece may never be updated if the browser
+    // does not support the DeviceOrientation Event API
+    , updated: false
+   };
+
+   randomColor = function()
+   {
+      var red = Math.floor(Math.random() * 255);
+      var green = Math.floor(Math.random() * 255);
+      var blue = Math.floor(Math.random() * 255);
+      return 'rgb('+red+','+green+','+blue+')';
+   }
+
+   Board.put = function(id, piece) {
+      if (pieces[id]) {
+          piece.color = pieces[id].color;
+       } else {
+          piece.color = randomColor();
+       }
+       pieces[id] = piece;
+       pieces[id].timestamp = new Date().getTime();
+   };
+
+   Board.draw = function() {
+      context.clearRect(0, 0, kBoardWidth,  kBoardHeight);
+
+      Board.drawBoard();
+
+      if (Board.myPiece.updated) {
+         Board.drawPiece(Board.myPiece);
+      }
+
+      var now = new Date().getTime();
+      for (id in pieces) {
+         if (pieces.hasOwnProperty(id)) {
+            var piece = pieces[id];
+            if (now - piece.timestamp > timeout) {
+               delete pieces[id];
+            } else {
+               Board.drawPiece(piece);
+            }
+         }
+      }
    };
 
    Board.drawBoard = function() {
-      context.clearRect(0, 0, kBoardWidth,  kBoardHeight);
-
       context.beginPath();
       for (var x = 0.5; x < kBoardWidth; x += 10) {
          context.moveTo(x, 0);
@@ -46,7 +90,7 @@
    };
 
    Board.updateCenter = function(acceleration) {
-      c = Board.piece.center;
+      c = Board.myPiece.center;
       c.xShift = c.xShift * 0.8 + acceleration.x * 2.0;
       c.yShift = c.yShift * 0.8 + acceleration.y * 2.0;
       c.x = Math.floor(c.x + c.xShift);
@@ -65,8 +109,19 @@
       if (c.y > kBoardHeight - kCircleRadius) {
          c.y = kBoardHeight - kCircleRadius;
       }
-      Board.piece.center = c;
+      Board.myPiece.center = c;
+      Board.myPiece.updated = true;
    };
+
+
+   // we draw at regular interval in case we
+   // do not get any message from the server
+   setInterval(function() {
+      Board.draw();
+   }, timeout);
+
+   // first time, only the board will be drawn
+   Board.draw();
 
    window.Board = Board;
 })(window);
