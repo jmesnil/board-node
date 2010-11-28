@@ -42,7 +42,7 @@
        pieces[id].timestamp = new Date().getTime();
    };
 
-   Board.draw = function () {
+   var draw = function () {
       canvas.getContext('2d').clearRect(0, 0, kBoardWidth, kBoardHeight);
       
       //drawBuffer(canvas.getContext('2d'));
@@ -128,15 +128,13 @@
       Board.myPiece.updated = true;
    };
 
-
-   // we draw at regular interval in case we
-   // do not get any message from the server
+   // the canvas is drawn at regular interval
    setInterval(function() {
-      Board.draw();
+      draw();
    }, refresh);
 
    // first time, only the board will be drawn
-   Board.draw();
+   draw();
 
    window.Board = Board;
 })(window);
