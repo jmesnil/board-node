@@ -58,10 +58,6 @@
    var drawBuffer = function(context) {
       drawBoard(context);
 
-      if (Board.myPiece.updated) {
-         drawPiece(context, Board.myPiece);
-      }
-
       var now = new Date().getTime();
       for (id in pieces) {
          if (pieces.hasOwnProperty(id)) {
@@ -73,6 +69,11 @@
             }
          }
       }
+
+      if (Board.myPiece.updated) {
+         drawPiece(context, Board.myPiece);
+      }
+
    };
 
    var drawBoard = function(context) {
